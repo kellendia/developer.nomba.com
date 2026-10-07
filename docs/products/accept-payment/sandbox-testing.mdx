@@ -42,7 +42,7 @@ curl --request POST \
 ```
 
 <Note>
-  All sandbox checkout endpoints are under the `/sandbox/checkout/` path prefix, not `/v1/checkout/`. This is the key difference between sandbox and production.
+  Sandbox checkout endpoints use the same `/v1/checkout/...` paths as production — only the host changes, to `sandbox.nomba.com`.
 </Note>
 
 ---
@@ -53,7 +53,7 @@ curl --request POST \
 
 ```bash
 curl --request POST \
-  --url https://sandbox.nomba.com/sandbox/checkout/order \
+  --url https://sandbox.nomba.com/v1/checkout/order \
   --header 'Authorization: Bearer <sandbox-token>' \
   --header 'Content-Type: application/json' \
   --header 'accountId: <your-sandbox-accountId>' \
@@ -173,7 +173,7 @@ Use the sandbox-specific fetch endpoint to confirm the transaction result:
 
 ```bash
 curl --request GET \
-  --url 'https://sandbox.nomba.com/sandbox/checkout/transaction?idType=orderReference&id=test-order-001' \
+  --url 'https://sandbox.nomba.com/v1/checkout/transaction?idType=orderReference&id=test-order-001' \
   --header 'Authorization: Bearer <sandbox-token>' \
   --header 'accountId: <your-sandbox-accountId>'
 ```
@@ -210,7 +210,7 @@ curl --request GET \
 You can query by `idType=orderReference` or `idType=orderId`. The `id` value changes accordingly.
 
 <Note>
-  The sandbox transaction fetch endpoint is `GET /sandbox/checkout/transaction` — not `GET /v1/checkout/transaction`, which is production-only. Transaction IDs in the sandbox follow the format `WEB-ONLINE_C-{first6charsOfAccountId}-{UUID}`.
+  The sandbox transaction fetch endpoint is `GET /v1/checkout/transaction` on the `sandbox.nomba.com` host — the same path used in production. Transaction IDs in the sandbox follow the format `WEB-ONLINE_C-{first6charsOfAccountId}-{UUID}`.
 </Note>
 
 ---
@@ -222,7 +222,7 @@ Test payments from foreign cards on the **International** side of the card chann
 
 ### Step 1 — Create an order in USD, GBP or EUR
 
-Use the same `POST /sandbox/checkout/order` request as above, with `"currency": "USD"` (or `GBP`, `EUR`). Open the `checkoutLink`, choose **Card**, then switch to **International**. The page shows the order amount and currency, plus the fee if your fee setting charges the customer.
+Use the same `POST /v1/checkout/order` request as above, with `"currency": "USD"` (or `GBP`, `EUR`). Open the `checkoutLink`, choose **Card**, then switch to **International**. The page shows the order amount and currency, plus the fee if your fee setting charges the customer.
 
 ### Step 2 — Pay with a test card
 
@@ -237,7 +237,7 @@ Any cardholder name, CVC and future expiry date work.
 
 ### Step 3 — Verify the transaction
 
-Fetch the result with `GET /sandbox/checkout/transaction`, exactly as for Nigerian cards. International card payments have `cardDetails` for the foreign card:
+Fetch the result with `GET /v1/checkout/transaction`, exactly as for Nigerian cards. International card payments have `cardDetails` for the foreign card:
 
 ```json Response (success)
 {
@@ -342,7 +342,7 @@ Test payments from UK and European bank accounts on the **Bank App** channel. In
 
 ### Step 1 — Create an order
 
-Use the same `POST /sandbox/checkout/order` request as above. Bank App is offered for every order currency except `USD` and `CDF`. Open the `checkoutLink` and choose **Bank App**.
+Use the same `POST /v1/checkout/order` request as above. Bank App is offered for every order currency except `USD` and `CDF`. Open the `checkoutLink` and choose **Bank App**.
 
 ### Step 2 — Choose a country and bank
 
@@ -360,7 +360,7 @@ An order can be authorised only once. A second authorisation fails with "This or
 
 ### Step 4 — Verify the transaction
 
-Fetch the result with `GET /sandbox/checkout/transaction`, as for card payments. Pay-by-bank payments have no `cardDetails`:
+Fetch the result with `GET /v1/checkout/transaction`, as for card payments. Pay-by-bank payments have no `cardDetails`:
 
 ```json Response (success)
 {
@@ -505,11 +505,11 @@ To receive webhooks during local development, use a tunnel tool (e.g. [ngrok](ht
 
 ## Refund testing
 
-Refunds are available in the sandbox. Use `POST /sandbox/checkout/refund` with the `transactionId` from the fetch transaction response.
+Refunds are available in the sandbox. Use `POST /v1/checkout/refund` with the `transactionId` from the fetch transaction response.
 
 ```bash
 curl --request POST \
-  --url https://sandbox.nomba.com/sandbox/checkout/refund \
+  --url https://sandbox.nomba.com/v1/checkout/refund \
   --header 'Authorization: Bearer <sandbox-token>' \
   --header 'Content-Type: application/json' \
   --header 'accountId: <your-sandbox-accountId>' \
